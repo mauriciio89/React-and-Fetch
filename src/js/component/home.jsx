@@ -18,7 +18,7 @@ const Home = () => {
       });
   }, []);
 
-  const onSubmit = (e) => {
+  const agregarTareas = (e) => {
     e.preventDefault();
     setToDo((prev) => [...prev, tarea]);
     setTarea("");
@@ -46,14 +46,35 @@ const Home = () => {
   };
   console.log(toDo);
   const elementDellete = (dIndex) => {
-    setToDo(toDo.filter((e, i) => i != dIndex));
+    let listaTemporal=toDo.filter((e, i) => i !== dIndex); 
+    setToDo(listaTemporal);
+    fetch("https://assets.breatheco.de/apis/fake/todos/user/mauricio89", {
+      method: "PUT",
+      body: JSON.stringify(toDo),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((resp) => {
+        console.log(resp.status); // el código de estado = 200 o código = 400 etc.
+        return resp.json(); // (regresa una promesa) will try to parse the result as json as return a promise that you can .then for results
+      })
+      .then((data) => {
+        //Aquí es donde debe comenzar tu código después de que finalice la búsqueda
+        console.log(data); //esto imprimirá en la consola el objeto exacto recibido del servidor
+      })
+      .catch((error) => {
+        //manejo de errores
+        console.log(error);
+		
+      });
   };
 
   return (
     <div className="container">
       <div>
         <h1 className="text-center">ToDo's</h1>
-        <form onSubmit={onSubmit}>
+        <form onSubmit={agregarTareas}>
           <div className="input-group d-flex justify-content-center">
             <input
               value={tarea}
